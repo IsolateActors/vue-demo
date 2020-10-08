@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			<hello-com v-if="isShow"></hello-com>
+		</div>
+		
+		<script type="text/javascript">
+			Vue.component("hello-com", {
+				template: '<div><h1>{{name}}</h1><button @click="clickEvent">点击</button></div>',
+				data:function(){
+					return {
+						name: 'zhou'
+					}
+				},
+				beforeCreate() {
+					console.log('beforeCreate')
+					
+				},
+				created() {
+					console.log('Create')
+					
+				},
+				beforeMount() {
+					console.log('beforeMount')
+					
+				},
+				mounted() {
+					console.log('mounted')
+					
+				},
+				beforeUpdate() {
+					console.log('beforeUpdate')
+				},
+				updated() {
+					console.log('updated')
+				},
+				beforeDestroy() {
+					console.log('befordestroy')
+				},destroyed() {
+					console.log('destroyed')
+				},
+				methods:{
+					clickEvent:function(){
+						this.name = "nihao"
+					}
+				}
+			})
+			
+			let app = new Vue({
+				el:'#app',
+				data:{
+					isShow: true
+				}
+			})
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			<ul>
+				<!-- <school school-name="北大"></school>
+				
+				<school :school-name="'清华'"></school>
+				
+				<school :school-name="schoolList[0]"></school>
+				 -->
+				<school v-for="item,index in schoolList":action='changeEvent' :key='index' :index='index' :school-name="item"></school>
+			</ul>
+			
+			<h2>选中的学校：{{chooseSchool}}</h2>
+		</div>
+		
+		<script type="text/javascript">
+			Vue.component("school", {
+				props:['schoolName', 'index', 'action'],
+				template:'<li><h3>学校名称：{{schoolName}}: {{index}}</h3><button @click="chooseEvent(schoolName)">选中学校</button></li>',
+				methods:{
+					chooseEvent:function(s){
+						console.log(s)
+						//console.log(this.action)
+						
+						// this.action(s)
+						
+						this.$parent.changeEvent(s)
+					}
+				}
+			})
+			
+			let app = new Vue({
+				el:'#app',
+				data:{
+					schoolList: ['xxx', 'aaa', 'ccc'],
+					chooseSchool:""
+				},
+				methods:{
+					changeEvent:function(data){
+						console.log("触发学校选中事件")
+						this.chooseSchool = data
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

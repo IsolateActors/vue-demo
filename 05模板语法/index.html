@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			#login{
+				background-color: pink;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<h1>{{message}}</h1>
+			<h1 v-once>{{message}}</h1>
+			<h1 v-html="htmlText"></h1>
+			
+			<div :id="idname">
+				登录
+			</div>
+			
+			<div id="">
+				{{firstname + lastname}}
+			</div>
+			
+			<div id="">
+				{{isVip?"欢迎VIP":"普通用户"}}
+			</div>
+			
+			<button @click="changeBg" type="button">
+				改变背景
+			</button>
+		</div>
+		
+		<script type="text/javascript">
+			let app = new Vue({
+				el:'#app',
+				data:{
+					message:"hello",
+					htmlText: "<span>nihao</span>",
+					idname: "login",
+					firstname: "zhang",
+					lastname:"san",
+					isVip: true
+				},
+				methods:{
+					changeBg:()=>{
+						document.body.style.background = "skyblue"
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

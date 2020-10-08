@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			<input type="text" name="username" id="username" v-model="username" value="" />
+			<p>{{username}}</p>
+			
+			<textarea rows="" cols="" v-model="username">
+				
+			</textarea>
+				
+			<span v-for="item in fruits">
+				{{item}}
+				<input type="checkbox" v-model="checkFruits" name="fruits" id="" :value="item" />
+			</span>
+			<h2>{{checkFruits}}</h2>
+			
+			<span v-for="item in fruits">
+				{{item}}
+				<input type="radio" v-model="radioFruits" name="zfruits" id="" :value="item" />
+			</span>
+			
+			<h2>{{radioFruits}}</h2>
+			
+			
+			<select name=""  v-model="chooseCity">
+				<option disabled="disabled" value ="">请选择</option>
+				<option v-for="item in citys" :value="item">{{item}}</option>
+			</select>
+			
+			<h3>{{chooseCity}}</h3>
+			
+			<select name=""  v-model="moreCity" multiple="multiple">
+				<option v-for="item in citys" :value="item">{{item}}</option>
+			</select>
+			<h3>{{moreCity}}</h3>
+		</div>
+		
+		<script type="text/javascript">
+			var app = new Vue({
+				el: '#app',
+				data:{
+					username: '小明',
+					fruits:['苹果', '雪梨', '香蕉'],
+					checkFruits: [],
+					radioFruits:"",
+					citys:['北京', '上海', '深圳', '广州'],
+					chooseCity: "",
+					moreCity:[]
+				}
+			});
+		</script>
+	</body>
+</html>
