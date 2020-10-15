@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/remLayout.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="./css/style.css" />
+		<link rel="stylesheet" type="text/css" href="./css/animate.css" />
+	</head>
+	<body>
+		<div id="app">
+			<div class="main">
+				<div class="header">
+					<div class="logo">ToDo</div>
+					<input type="text" v-model="inputValue" @keydown.enter="enterEvent" id="input" placeholder="请输入代办事项">
+				</div>
+
+				<div class="doing todo">
+					<h3><span class="title">正在运行</span><span class="num">0</span></h3>
+					<div class="list">
+						<transition-group enter-active-class="animate__animated animate__bounceInLeft" leave-active-class="animate__animated animate__backOutRight">
+							<div class="todoItem" v-for="item,index in doingList" :key="'item'+ index">
+								<input type="checkbox" @click.prevent="checkDone(item.id)">
+								<div class="content">{{item.content}}</div>
+								<div class="del" @click="deleteItem(item.id)">删除</div>
+							</div>
+						</transition-group>
+					</div>
+				</div>
+
+				<div class="done todo">
+					<h3><span class="title">正在运行</span><span class="num">0</span></h3>
+					<div class="list">
+						<transition-group enter-active-class="animate__animated animate__bounceInLeft" leave-active-class="animate__animated animate__backOutRight">
+							<div class="todoItem" v-for="item,index in doneList" :key="'item'+ index">
+								<input type="checkbox" checked="checked" @click.prevent="checkDone(item.id)">
+								<div class="content">{{item.content}}</div>
+								<div class="del" @click="deleteItem(item.id)">删除</div>
+							</div>
+						</transition-group>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			var app = new Vue({
+				el: "#app",
+				data: {
+					todoList: [],
+					inputValue: ""
+				},
+				computed: {
+					doingList: function() {
+						return this.todoList.filter(function(item, index) {
+							return !item.isDone;
+						})
+					},
+					doneList: function() {
+						return this.todoList.filter(function(item, index) {
+							return item.isDone;
+						})
+					}
+				},
+				methods: {
+					enterEvent: function(event) {
+						this.todoList.push({
+							content: this.inputValue,
+							isDone: false,
+							id: this.todoList.length
+						});
+						this.saveData();
+						this.inputValue = "";
+					},
+					saveData: function() {
+						localStorage.todoList = JSON.stringify(this.todoList);
+					},
+
+					checkDone: function(id) {
+						this.todoList[id].isDone = !this.todoList[id].isDone;
+						this.saveData()
+					},
+
+					deleteItem: function(id) {
+						this.todoList.splice(id, 1);
+						this.todoList.forEach(function(item, i) {
+							item.id = i;
+						});
+						this.saveData()
+					}
+				},
+				mounted	:function(){
+					this.todoList = localStorage.todoList?JSON.parse(localStorage.todoList):[];
+				}
+			});
+		</script>
+	</body>
+</html>
