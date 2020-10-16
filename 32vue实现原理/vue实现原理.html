@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+	<body>
+		<div id="app">
+			<input type="text" v-model="msg" name="" id="" value="" />
+			<h1 v-html="msg"></h1>
+			<h2>{{msg}}</h2>
+			<button type="button" @click="changeEvent">修改msg</button>
+		</div>
+		
+		<script type="text/javascript">
+			class Vue{
+				//构造函数
+				constructor(options) {
+					//通过选择器获取根对象
+				    this.$el = document.querySelector(options.el);
+					
+					//数据创造之前
+					if(typeof options.berforeCreate == 'function'){
+						options.berforeCreate.bind(this)();
+					}
+					
+					//保存下来
+					this.$options = options;
+					
+					//设置1个对象专门保存修改更新的事件
+					this.$watchEvent = {}
+					
+					
+					//代理options的data数据
+					//console.log(options.data);
+					this.proxyData();
+					
+					//劫持
+					this.observe()
+					
+					//数据创造之后
+					if(typeof options.created == 'function'){
+						options.created.bind(this)();
+					}
+					
+					//挂载之前
+					if(typeof options.beforeMount == 'function'){
+						options.beforeMount.bind(this)();
+					}
+					
+					//把view的数据和事件进行绑定
+					this.compile(this.$el)
+					
+					//挂载后
+					if(typeof options.mounted == 'function'){
+						options.mounted.bind(this)();
+					}
+				}
+				
+				compile(cNode){
+					// console.log(this.$el)
+					console.log(cNode)
+					cNode.childNodes.forEach((node, index) => {
+						if(node.nodeType == 1){
+							//元素类型
+							if(node.hasAttribute("v-html")){
+								let vmKey = node.getAttribute("v-html").trim();
+								console.log(this[vmKey]);
+								if(this.hasOwnProperty(vmKey)){
+									node.innerHTML = this[vmKey];
+									let watcher = new Watch(this, vmKey, node, "innerHTML")
+									if(this.$watchEvent[vmKey]){
+										this.$watchEvent[vmKey].push(watcher)
+									}else{
+										this.$watchEvent[vmKey] = [];
+										this.$watchEvent[vmKey].push(watcher);
+									}
+									//删除节点事件
+									node.removeAttribute("v-html")
+								}
+								
+							}
+							
+							if(node.hasAttribute("v-model")){
+								let vmKey = node.getAttribute("v-model").trim();
+								if(this.hasOwnProperty(vmKey)){
+									node.value = this[vmKey];
+									let watcher = new Watch(this, vmKey, node, "value")
+									if(this.$watchEvent[vmKey]){
+										this.$watchEvent[vmKey].push(watcher)
+									}else{
+										this.$watchEvent[vmKey] = [];
+										this.$watchEvent[vmKey].push(watcher);
+									}
+									//删除节点事件
+									node.removeAttribute("v-model")
+								}
+								node.addEventListener('input', (e) => {
+									this[vmKey] = node.value;
+								})
+							}
+							
+							if(node.hasAttribute("@click")){
+								let vmKey = node.getAttribute("@click").trim();
+								node.addEventListener('click', (event) => {
+									this.eventFn = this.$options.methods[vmKey].bind(this);
+									this.eventFn(event);
+								})
+							}
+							
+							if(node.childNodes.length > 0){
+								this.compile(node);
+							}
+						}
+						if(node.nodeType == 3){
+							//文本类型
+							console.log(node.textContent)
+							let reg = /\{\{(.*?)\}\}/g;
+							node.textContent = node.textContent.replace(reg, (match, vmKey) => {
+								console.log(match)
+								console.log(vmKey)
+								vmKey = vmKey.trim();
+								if(this.hasOwnProperty(vmKey)){
+									node.value = this[vmKey];
+									let watcher = new Watch(this, vmKey, node, "textContent")
+									if(this.$watchEvent[vmKey]){
+										this.$watchEvent[vmKey].push(watcher)
+									}else{
+										this.$watchEvent[vmKey] = [];
+										this.$watchEvent[vmKey].push(watcher);
+									}
+								}
+								return this[vmKey];
+							})
+						}
+					})
+				}
+				
+				proxyData(){
+					//循环通过get set 实现代理数据
+					for(let key in this.$options.data){
+						console.log(key)
+						Object.defineProperty(this, key, {
+							configurable: false,
+							enumerable: true,
+							//value:"定义值",
+							//writable: true/false
+							set(val){
+								this.$options.data[key] = val;
+							},
+							get(){
+								return this.$options.data[key];
+							}
+						})
+					}
+				}
+				
+				observe(){
+					//劫持事件
+					for(let key in this.$options.data){
+						//获取此处的值
+						let value = this.$options.data[key];
+						let that = this;
+						Object.defineProperty(this.$options.data, key, {
+							configurable: false,
+							enumerable: true,
+							//value:"定义值",
+							//writable: true/false
+							set(val){
+								value = val;
+								
+								console.log("触发设置内容事件")
+								if(that.$watchEvent[key]){
+									console.log(that.$watchEvent[key])
+									that.$watchEvent[key].forEach((item, index) => {
+										item.update()
+									})
+								}
+							},
+							get(){
+								console.log("触发获取内容事件")
+								return value;
+							}
+						})
+					}
+				}
+			}
+			
+			class Watch{
+				constructor(vm, key, node, attr, nodeType) {
+				    this.vm = vm;
+					this.key = key;
+					this.node = node;
+					this.attr = attr;
+					this.nodeType = nodeType;
+				}
+				
+				update(){
+					//更新前
+					if(typeof options.beforeUpdate == 'function'){
+						options.beforeUpdate.bind(this)();
+					}
+					
+					this.node[this.attr] = this.vm[this.key]
+					
+					//更新后
+					if(typeof options.updated == 'function'){
+						options.updated.bind(this)();
+					}
+				}
+				
+			}
+		</script>
+		
+		<script type="text/javascript">
+			let app = new Vue({
+				el:"#app",
+				data:{
+					msg: "hello world!",
+					username: "小明"
+				},
+				methods:{
+					changeEvent: function(){
+						this.msg = "hello vue!"
+					}
+				},
+				beforeMount(){
+					console.log("挂载前")
+				}
+			})
+			
+			console.log(app)
+		</script>
+	</body>
+</html>
