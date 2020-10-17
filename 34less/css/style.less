@@ -1,0 +1,35 @@
+@main-color: #ff6700;
+
+.bgColor{
+	background-color: @main-color;
+}
+
+.button{
+	background-color: @main-color;
+}
+
+.xk{
+	width: 100px;
+	height: 100px;
+	border: 1px solid #ccc;
+}
+
+.box{
+	.xk;
+	background-color: @main-color;
+}
+
+.abutton(@bgcolor: blue){
+	.xk;
+	background-color: @bgcolor;
+}
+
+.redaButton{
+	.abutton(pink);
+	text-align: center;
+	line-height: 100px;
+}
+
+.defaultaButton{
+	.abutton();
+}
