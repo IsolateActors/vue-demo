@@ -2,17 +2,13 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/about/123">About</router-link> |
-      <router-link to="/list">List</router-link>
+      <router-link to="/about">About</router-link>
     </div>
-    <transition
-      name=""
-      enter-active-class="animate__animated animate__bounceInLeft"
-      leave-active-class="animate__animated animate__backOutRight"
-      mode="out-in"
-    >
-      <router-view />
-    </transition>
+    <div id="nav">
+      <router-link to="/state">State</router-link> |
+      <router-link to="/getter">Getter</router-link>
+    </div>
+    <router-view />
   </div>
 </template>
 
