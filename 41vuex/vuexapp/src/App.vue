@@ -6,7 +6,9 @@
     </div>
     <div id="nav">
       <router-link to="/state">State</router-link> |
-      <router-link to="/getter">Getter</router-link>
+      <router-link to="/getter">Getter</router-link> |
+      <router-link to="/action">Action</router-link> |
+      <router-link to="/buycart">Buycart</router-link>
     </div>
     <router-view />
   </div>

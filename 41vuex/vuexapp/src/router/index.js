@@ -26,6 +26,16 @@ const routes = [{
     path: '/getter',
     name: 'Getter',
     component: () => import( /* webpackChunkName: "about" */ '../views/Getter.vue')
+  },
+  {
+    path: '/action',
+    name: 'Action',
+    component: () => import( /* webpackChunkName: "about" */ '../views/Action.vue')
+  },
+  {
+    path: '/buycart',
+    name: 'Buycart',
+    component: () => import( /* webpackChunkName: "about" */ '../views/BuyCart.vue')
   }
 
 ]
