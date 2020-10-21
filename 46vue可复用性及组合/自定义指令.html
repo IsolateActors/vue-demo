@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			<input type="text" v-model="msg" v-focus name="" id="" value="" />
+		</div>
+		
+		<script type="text/javascript">
+			Vue.directive('focus', {
+				bind: function(){
+					console.log("第一次指令绑定到元素上的时候进行调用，仅调用一次")
+				},
+				inserted: function(el){
+					//插入函数，在元素往父元素插入时候调用
+					console.log("组件插入时候调用")
+					console.log(el)
+					el.focus()
+				},
+				//可能发生在其子组件更新之前
+				update:function(){
+					console.log("组件更新时候调用")
+				},
+				componentUpdated: function(){
+					console.log("组件和子组件更新完成时候调用")
+				},
+				unbind: function(){
+					console.log("组件解绑时候调用，仅一次")
+				}
+			})
+			
+			let app = new Vue({
+				el:'#app',
+				data: {
+					msg: "hello"
+				}
+			})
+		</script>
+	</body>
+</html>
